@@ -17,6 +17,7 @@
                                     <i class="fa fa-edit"></i>
                                 </a>
                             </div>
+<<<<<<< HEAD
                             <div class="profile-text">
                                 <h5 id="user-full-name" class="text-center" >Promise Orung</h5>
                                 <h6 id="user-profile-status" class="text-center mt-2" >Coach</h6>
@@ -27,14 +28,85 @@
                                     <p id="simple-quotes">No one can make you feel inferior without your consent</p>
                                     <span><i class="fa fa-map-marker" id="location-profile"></i> Akwa Ibom, Nigeria</span>
                                     <span><i class="fa fa-calendar ml-11" id="date-joined"></i> Joined August 2019</span>
+=======
+                        </div>
+                        
+                    </div>
+                    <div class="profile-text col-md-12 col-12 mt-4">
+                        <h5 id="user-full-name" class="text-center" >{{user.name}}</h5>
+                        <h6 id="user-profile-status" class="text-center mt-2" >{{user.role}}</h6>
+                        <div class="button-box">
+                            <button class="btn btn-primary" onclick="followUser('{{user.uuid}}')">Follow</button>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="profile-text bt-2 col-md-12 col-12 mt-2 py-2">
+                        <div class="">
+                            <p id="simple-quotes">{{user.profiles.1.favoriteQuote}}</p>
+                            <span><i class="fa fa-map-marker" id="location-profile"></i>{{user.address}}</span>
+                            {{!-- <span><i class="fa fa-calendar ml-11" id="date-joined"></i>Joined August 2019</span> --}}
+                        </div>
+                        <div>
+                            <span><b>99</b> Followers</span>
+                            <span class="ml-11 "><b> 50</b> Following</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            <ul class="friend mt-5 nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="post-tab" data-toggle="tab" href="#post" role="tab"
+                        aria-controls="post" aria-selected="true">Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="media-tab" data-toggle="tab" href="#media" role="tab" aria-controls="media"
+                        aria-selected="false">Media</a>
+                </li>
+            </ul>
+            <div class="card card-taps mb-5">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="post" role="tabpanel" aria-labelledby="post-tab">
+                          {{#each user.posts}}
+                            <div class="tap-content-post">
+                             <div class="d-flex justify-content-start">
+                            <div>
+                                <img src="/img/21104.svg" class="img-prof">
+                            </div>
+                            <div class="tap-cont-profile pd-3-12">
+                                <h5>{{this.owner_name}}</h5>
+                                {{!-- <h6 class="color-red">Coach</h6> --}}
+                                <p>1hrs ago</p>
+                            </div>
+                          </div>
+                            <p>{{this.post}}</p>
+                            <div>{{{this.media}}}</div>
+                            <div class="d-flex justify-content-between">
+                                <div class="p-2 text-center">
+                                    <b>123</b> <i class="fa fa-thumbs-up"></i>
+>>>>>>> 5c2160e0b22121cf845c0f40e0a7906ce946dbed
                                 </div>
                                 <div>
                                     <span><b>99</b> Followers</span>
                                     <span class="ml-11 "><b> 50</b> Following</span>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             <div class="button-box">
                                 <button class="btn btn-primary btn-block" href="#">Follow</button>
+=======
+                            <div class="d-flex justify-content-between m-bd">
+                                <div class="p-2 text-center">
+                                    <i class="fa fa-thumbs-up"></i> Like
+                                </div>
+                                {{!-- <div class="p-2 text-right">
+                                    <i class="fa fa-comments"></i> Comment
+                                </div> --}}
+                                <div class="p-2 text-right">
+                                    <i class="fa fa-share-alt"></i> Share
+                                </div>
+>>>>>>> 5c2160e0b22121cf845c0f40e0a7906ce946dbed
                             </div>
 
                         </div>
@@ -105,8 +177,20 @@
                             <div class="tab-pane fade" id="pages" role="tabpanel" aria-labelledby="pages-tab">...</div>
                             <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">...</div>
                         </div>
+                          {{/each}}
 
                     </div>
+<<<<<<< HEAD
+=======
+                    <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
+                           {{#each user.posts}}
+                            <div>{{{this.media}}}</div>
+                              {{/each}}
+                    </div>
+                    {{!-- <div class="tab-pane fade" id="pages" role="tabpanel" aria-labelledby="pages-tab">...</div>
+                    <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">...</div> --}}
+                    </div>
+>>>>>>> 5c2160e0b22121cf845c0f40e0a7906ce946dbed
                 </div>
             </div>
         </div>

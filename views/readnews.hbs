@@ -9,35 +9,27 @@
             <div class="profile-section card mb-5">
                 <div class="profile-img">
                     <div class="img-text ">
-                    <img src="img/bg-img.jpg" class="img-fluid" id="new_image">
+                    <img src="{{detail.urlToImage}}" class="img-fluid" id="new_image">
                     </div>
                     <div class="pd-15 ">
-                        <h4 id="new_title">Aubameyang battles Fernandes for Premier </h4>
-                        {{!-- <div class="d-flex justify-content-between">
-                            <div>
+                        <h4 id="new_title">{{detail.title}}</h4>
+                        <div class="d-flex justify-content-between">
+                            {{!-- <div>
                                 <span> <b>2234</b> Likes </span>
                                 <span class="pl-3"> <b>2234</b> Views </span>
-                            </div>
+                            </div> --}}
                             <div>
-                                <button class="btn btn-primary">Follow</button>
-                               <button class="btn btn-primary">Follow</button>
-                                <button class="btn btn-primary">Follow</button>
+                                {{!-- <button class="btn btn-primary">Follow</button>
+                               <button class="btn btn-primary">Follow</button> --}}
+                                <a target="_blank" href="{{detail.url}}" class="btn btn-primary">Read all</a>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="card mt-5 pd-15">
                 <div class="tap-content-post">
-                    <p id="new_content">The 30-year-old enjoyed a fine scoring run of three goals in the three league matches he played in February
-                    Arsenal captain Pierre-Emerick Aubameyang has been nominated for the Premier League Player of the Month award for February.</p>
-
-                    <p>Aubameyang battles Manchester United's January signing Bruno Fernandes, Wolverhampton Wanderers' 
-                    Matt Doherty, Everton’s Dominic Calvert-Lewin, Burnley's Nick Pope and Chelsea's Marcos Alonso for the 
-                    monthly accolade.</p>
-
-                    <p>In February, the Gabon international scored three goals in three matches to help Mikel Arteta's side keep a 
-                    record of two wins and a draw in their league fixtures.</p>
+                    <p id="new_content">{{detail.content}}</p>
                     {{!-- <div class="d-flex justify-content-between">
                         <div class="p-2 text-center"> 
                             <b>123</b> <i class="fa fa-thumbs-up"></i>

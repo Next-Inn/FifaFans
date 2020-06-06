@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   SingleChat.associate = function(models) {
     // associations can be defined here
+    SingleChat.belongsTo(models.User, {
+      onDelete: 'CASADE',
+			foreignKey: 'sender_uuid'
+    })
+    SingleChat.belongsTo(models.User, {
+      onDelete: 'CASADE',
+			foreignKey: 'recipient_uuid'
+    })
   };
   return SingleChat;
 };

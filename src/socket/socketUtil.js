@@ -1,5 +1,8 @@
 import { generateNotification, generateMessage } from './messages';
 import helperMethods from '../utils/helpers';
+import models from '../models';
+
+const { User } = models;
 
 
 const sendPersonalSms = async (socket_id, user_uuid, message, io) => {
@@ -19,8 +22,8 @@ const joinGroup = async (group_id, user, socket, io) => {
 
 const sendMessageToGroup = async (group_id, message, user, io, parent_uuid ="") => {
   try {
-    await helperMethods.saveGroupChat(group_id, user.uuid, parent_uuid, message, user.name );
-    await io.in(group_id).emit('message', generateMessage(user.name, message));
+    const  chat = await helperMethods.saveGroupChat(group_id, user.uuid, parent_uuid, message, user.name );
+    await io.in(group_id).emit('message', generateMessage(user.name, chat.uuid, message));
   } catch (error) {
     console.log(error);
   }
@@ -34,22 +37,15 @@ const sendMessageToGroup = async (group_id, message, user, io, parent_uuid ="") 
  * @param {text} message message body from the sender
  * @param {token} client socket id of the sender which will be used to emit error messages back to sender.
  */
-const sendPrivateMessage = async (senderuuid, recipientuuid, message, client) => {
+const sendPrivateMessage = async (data, io, group_id) => {
   try {
-    const user = await getUser(recipientuuid);
-    if (!user) {
-      console.log('User not found')
-      await io.to(client).emit('error', generateMessage('Error', 'User not found or available'));
-      return;
-    };
-    const sender = await getUser(senderuuid);
+    const sender = await helperMethods.getAUserByUuid(User, sender_uuid);
     if (!sender) {
       console.log('User not found')
-      await io.to(client).emit('error', generateMessage('Error', "You don't have enough access. Please login to send messages"));
       return;
     };
-    await io.to(user.token.socket_id).emit('personalMessage', generateMessage(sender.name, message));
-    await savePrivateChat(senderuuid, recipientuuid, message);
+     const chat = await helperMethods.createPersonalChat(data);
+    await io.to(group_id).emit('personalMessage', generateMessage(sender.name, chat.uuid, data.message));
   } catch (error) {
     console.log(error);
   }

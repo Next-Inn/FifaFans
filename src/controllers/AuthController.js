@@ -98,7 +98,8 @@ const AuthController = {
 
 	/**
 	 *Verification link confirmation from email link
-	 * @query {verifyId} req
+	 * @query {id} req
+	 * @query {id} req
 	 * @query {uuid} res
 	 * @param {*} next
 	 */

@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Post.associate = function(models) {
     // associations can be defined here
+    Post.belongsTo(models.User, {
+      foreignKey: 'user_uuid'
+    })
   };
   return Post;
 };

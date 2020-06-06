@@ -2,7 +2,7 @@
 import Sequelize, { Op, fn, col, and } from 'sequelize';
 import models from '../models'
 
-const { ChatRoomMember, RoomChat } = models;
+const { ChatRoomMember, RoomChat, User, Post, SingleChat, Profile } = models;
 
 const helperMethods = {
 	async searchWithCategoryAndLocation (point, category_uuid, Service) {
@@ -188,6 +188,14 @@ const helperMethods = {
 	async getAUserByUuid (table, uuid) {
 		const user = await table.findOne({
 			where: { uuid },
+			include: [{
+			 model: Post,
+			 as: 'posts'
+			},
+			{
+			 model: Profile, 
+			 as:'profiles'	
+			}],
 			attributes: {
 				exclude: [
 					'password',
@@ -196,7 +204,7 @@ const helperMethods = {
 				]
 			}
 		});
-		return user;
+		return user.toJSON();
 	},
 
 	//find user by username
@@ -421,6 +429,45 @@ const helperMethods = {
 		return friend;
 	},
 
+	// check for follower
+	async checkForFollower (table, user_uuid, follower_uuid) {
+		const follower = await table.findOne({
+			where: { user_uuid, follower_uuid },
+			attributes: {
+				exclude: [
+					'createdAt',
+					'updatedAt'
+				]
+			}
+		});
+		return follower;
+	},
+
+	// follow a user
+	async createFollower (table, user_uuid, follower_uuid) {
+		const follower = await table.create({
+			user_uuid,
+			follower_uuid,
+			blocked: false,
+		});
+		return follower;
+	},
+
+	// list all user's follower
+	async listAllFollowers (table, user_uuid) {
+		const followers = await table.findAll({
+			// include: User,
+			where: { user_uuid, blocked: false },
+			attributes: {
+				exclude: [
+					'createdAt',
+					'updatedAt'
+				]
+			}
+		});
+		return followers;
+	},
+
 	// list user joined rooms
 	async getUserGroups(user, table){
 		try {
@@ -489,6 +536,29 @@ const helperMethods = {
 		  console.log(e);
 		}
 		
+	  },
+
+	  async createPersonalChat(data){
+		const chat =await SingleChat.create(data);
+		return chat;
+	  },
+
+
+	  async getChats (user_uuid, secondP_uuid) {
+		 const chats = await SingleChat.findAll({
+			include: [{
+				model: User,
+			}], 
+			where: {
+				sender_uuid: {
+				  [Op.or]: [user_uuid, secondP_uuid]
+				},
+				recipient_uuid: {
+				  [Op.or]: [user_uuid, secondP_uuid]
+				}
+			  },
+		 }) 
+		 return chats;
 	  },
 
 	

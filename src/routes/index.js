@@ -3,6 +3,7 @@ import auth from './auth';
 import user from './user';
 import post from './post';
 import room from './room';
+import chats from './chats';
 
 export default (app) => {
 	app.use(express.json());
@@ -16,7 +17,7 @@ export default (app) => {
 	);
 
 	app.use('/api/v1', [
-		auth, user, room, post
+		auth, user, room, post, chats
 	]);
 
 	app.all('/*', (req, res) =>
