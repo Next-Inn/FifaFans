@@ -9,6 +9,7 @@ const userLayout = document.getElementById('media')
 const postLayout = document.getElementById('post')
 
 
+
 console.log(layout)
 const allPost = document.getElementById("getAllPosts")
 
@@ -306,7 +307,7 @@ const generalPost = (data) => {
                       </div>
                       <div class=" flex-grow-1 pd-4 ml-2 ">
                         <div class="form-group green-border-focus">
-                          <textarea name="" placeholder="Write comments..."id="${data.uuid}-comment-input" class="form-control">
+                          <textarea name="" placeholder="Write comments..."id="${data.uuid}-comment-input" class="form-control comment-textarea">
                           
                           </textarea>
                           </div>
@@ -317,6 +318,21 @@ const generalPost = (data) => {
                   </div>
                 </div>`;
 }
+
+
+// const textarea = document.querySelector('textarea');
+
+// textarea.addEventListener('keydown', autosize);
+
+// function autosize() {
+//   var el = this;
+//   setTimeout(function () {
+//     el.style.cssText = 'height:auto; padding:0';
+//     // for box-sizing other than "content-box" use:
+//     // el.style.cssText = '-moz-box-sizing:content-box';
+//     el.style.cssText = 'height:' + el.scrollHeight + 'px';
+//   }, 0);
+// }
 
 
 

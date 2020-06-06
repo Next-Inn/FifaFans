@@ -367,15 +367,37 @@ a {
   letter-spacing: 2px;
 }
 
-.green-border-focus textarea {
+.comment-textarea {
   border-radius: 28px;
+  overflow: hidden;
+  display:block;
 }
+
+#error-message {
+  background: red;
+  color:#fff;
+  text-align: center;
+}
+#success-message {
+  background: green;
+  color:#fff;
+  text-align: center;
+}
+
+
 
 
 /* media queries */
 
 @media (max-width: 767px){
 
+
+  .room-detail a {
+    font-size: 20px;
+  }
+  .room-box img {
+    margin-right: 0;
+  }
   .signin {
     max-width: 330px !important;
   }
