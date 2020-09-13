@@ -120,7 +120,8 @@ if (logout_user) {
 
 
 function logoutUSer() {
-    prompt('Are you sure? ...... (Yes/No)')
+    // prompt('Are you sure? ...... (Yes/No)')
+    TOAST.infoToast('You are logging out');
     localStorage.removeItem('token');
     window.location.replace('/login');
 }
@@ -295,3 +296,22 @@ function closeNav() {
     document.getElementById("mySidepanel").classList.add("width-0");
     document.getElementById("mySidepanel").classList.remove("width-250");
 }
+
+const nextButton = document.querySelector('#next-button');
+const pages = ["/changepassword", "/usercontactinfo", "/aboutuser"];
+nextButton.addEventListener('click', changePages)
+// let count = 0;
+
+
+console.log(nextButton.innerHTML)
+function changePages() {
+    console.log('clicked')
+    // pages.forEach((elem) => {
+    //   if (nextButton.innerHTML == "Next") {
+    //     window.location.replace(elem);
+    //     }
+        
+    // });
+    
+}
+

@@ -94,30 +94,30 @@ function getMediaType(data) {
 
 function createCanva(data) {
   console.log(data.post.toString().substring(0, 3))
-  if (data.post.toString().substring(0, 4) === "http"){
-    return `<div class="post-bg">
-    <div class="post-txt">
-      <a class="n_link" href="${data.post}" target="_blank" style="font-size:50px">${data.post}</a>
+  if (
+    data.post.toString().substring(0, 4) === "http") {
+    return `<div class="d-flex justify-content-center align-items-center" style="background: #005391; color: #fff; min-height: 200px;>
+    <div class="post-txt d-flex justify-content-center align-items-center">
+      <a class="n_link w-100 px-2 py-4 text-center" href="${data.post}" target="_blank" style="font-size:18px;">${data.post}</a>
     </div>
-  </div>`
+  `;
   } else {
-    if (data.media && data.media !== '') {
+    if (data.media && data.media !== "") {
       return `<p class="comment-p">${data.post}</p>`;
-    }else {
+    } else {
       if (data.post.toString().length < 40) {
         return `<div class="post-bg">
         <div class="post-txt">
           <p style="font-size:50px">${data.post}</p>
         </div>
-      </div>`
+      </div>`;
       } else if (data.post.toString().length >= 40) {
         return `<div class="post-bg">
         <div class="post-txt">
-          <p style="font-size:16px">${data.post}</p>
+          <p class="small-post" style="font-size:16px;">${data.post}</p>
         </div>
-      </div>`
+      </div>`;
       }
-    
     }
   }
 
@@ -350,17 +350,15 @@ const generalPost = (data) => {
                        ${displayComments(data.comment)}
                     </div>
 
-                    <div class="d-flex  pd-15 justify-content-start comments">
+                    <div class="d-flex  pd-155 justify-content-start comments">
                             
-                            <form class="form-inline my-2"></form>
-                            <div class=" green-border-focus w-100">
-                                <textarea name="" placeholder="Write comments..."id="${
-      data.uuid
-                          }-comment-input" class="form-control textarea-autosize"></textarea>
-                            </div>
+                    <form class="form-inline my-2"></form>
+                    <div class=" green-border-focus w-100">
+                        <textarea name="" placeholder="Write comments..."id="${ data.uuid }-comment-input" class="form-control textarea-autosize"></textarea>
+                    </div>
 
-                            <p class="fa fa-send border-none px-2 py-3" onclick="commentPost('${data.uuid}')"></p>
-                        </div>
+                    <p class="fa fa-send border-none px-2 py-3" onclick="commentPost('${data.uuid}')"></p>
+                </div>
 </div>                   
                 </div>`;
 }
