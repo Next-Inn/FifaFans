@@ -1,97 +1,80 @@
-#!/usr/bin/env node
+import '@babel/polyfill';
+import express from 'express';
+import passport from 'passport';
+import cors from 'cors';
+import errorhandler from 'errorhandler';
+import morgan from 'morgan';
+import methodOverride from 'method-override';
+import cookieParser from 'cookie-parser';
+import env from './config/env';
+import routes from './routes';
+import multer from 'multer';
 
-/**
- * Module dependencies.
- */
+const upload = multer();
 
-var app = require('./app');
-var debug = require('debug')('fifafans:server');
-var http = require('http');
-var socket = require('socket.io');
-var sockets = require('./socket');
+const production = env.NODE_ENV === 'production';
 
-/**
- * Get port from environment and store in Express.
- */
+// Create global app object
+const app = express();
 
-var port = normalizePort(process.env.PORT || '4000');
-app.set('port', port);
+app.use(passport.initialize());
+app.use(cors());
+app.use(cookieParser());
 
-/**
- * Create HTTP server.
- */
+// Normal express config defaults
+app.use(morgan('dev'));
 
-var server = http.createServer(app);
-var io = socket(server);
-sockets.default(io);
-/**
- * Listen on provided port, on all network interfaces.
- */
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-server.listen(port, () => {
-    console.log(`Server running on PORT ${port}\nVisit http://localhost:${port}`);
+app.use(methodOverride());
+
+if (!production) {
+  app.use(errorhandler());
+}
+
+// app.get('/api/v1', (req, res) =>
+//     res.status(200).send({
+//         status: 'success',
+//         data: 'Welcome to Fifa Fans API'
+//     })
+// );
+
+// connect app to routes
+app.use('/v1.0/api', routes);
+
+// / catch 404 and forward to error handler
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
-server.on('error', onError);
-server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-    var port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
+// development error handler
+if (!production) {
+  app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(err.status || 500);
+    res.json({
+      errors: {
+        message: err.message,
+        error: err,
+      },
+    });
+  });
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+// routes
+// app.use(routes);
+// app.get('/', (req, res) => res.status(200).send({
+//   message: 'Welcome to Fifafan',
+// }));
+app.all('*', (req, res) => res.send({ message: 'route not found' }));
 
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
+// start our server...
+const server = app.listen(process.env.PORT || 3000, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Listening on port ${server.address().port}\nVisit http://localhost:${server.address().port}`);
+});
 
-    var bind =
-
-        typeof port === 'string' ? 'Pipe ' + port :
-        'Port ' + port;
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
-            throw error;
-    }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-    var addr = server.address();
-    var bind =
-
-        typeof addr === 'string' ? 'pipe ' + addr :
-        'port ' + addr.port;
-    debug('Listening on ' + bind);
-}
+export default app;
