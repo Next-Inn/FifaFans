@@ -5,7 +5,7 @@ import Datauri from 'datauri';
 import upload from '../utils/multer-config';
 require('../config/cloudinaryconfig');
 
-const duri = new Datauri();
+// const duri = new Datauri();
 
 const uploadimage = async (file, public_id = '') => {
 	upload.single('avatar');

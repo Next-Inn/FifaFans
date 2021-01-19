@@ -33,12 +33,12 @@ if (!production) {
   app.use(errorhandler());
 }
 
-app.get('/api/v1', (req, res) =>
-    res.status(200).send({
-        status: 'success',
-        data: 'Welcome to Fifa Fans API'
-    })
-);
+// app.get('/api/v1', (req, res) =>
+//     res.status(200).send({
+//         status: 'success',
+//         data: 'Welcome to Fifa Fans API'
+//     })
+// );
 
 // connect app to routes
 app.use('/v1.0/api', routes);
@@ -65,10 +65,10 @@ if (!production) {
 }
 
 // routes
-app.use(routes);
-app.get('/', (req, res) => res.status(200).send({
-  message: 'Welcome to Fifafan',
-}));
+// app.use(routes);
+// app.get('/', (req, res) => res.status(200).send({
+//   message: 'Welcome to Fifafan',
+// }));
 app.all('*', (req, res) => res.send({ message: 'route not found' }));
 
 // start our server...

@@ -38,22 +38,12 @@ module.exports = {
 				defaultValue: false
 			},
 			role: {
-				type: Sequelize.ENUM,
-				values: [
-					'user',
-					'admin'
-				],
+				type: Sequelize.ENUM('user', 'admin'),
 				defaultValue: 'user'
 			},
 			status: {
-				type: Sequelize.ENUM,
-				values: [
-					'coach',
-					'player',
-					'fan',
-					'inactive'
-				]
-				// defaultValue: 'inactive'
+				type: Sequelize.ENUM('coach', 'player', 'fan', 'inactive'),
+				defaultValue: 'inactive'
 			},
 			club: {
 				type: Sequelize.STRING

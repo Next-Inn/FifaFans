@@ -7,6 +7,11 @@ import chatRoutes from './chats'
 
 const router = Router();
 
+router.use('/', (req, res) =>
+res.status(200).send({
+    status: 'success',
+    data: 'Welcome to Fifa Fans API'
+}));
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use('/post', postRoutes);
