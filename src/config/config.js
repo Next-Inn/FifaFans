@@ -1,31 +1,19 @@
 /* eslint-disable quote-props */
-import { config } from 'dotenv';
-
-config();
+import env from './env';
 
 module.exports = {
-	development: {
-		use_env_variable: 'DATABASE_URL_DEV',
-		dialect: 'postgres',
-		logging: false,
-		dialectOptions: {
-			ssl: true
-		}
-	},
-	test: {
-		use_env_variable: 'DATABASE_URL_TEST',
-		dialect: 'postgres',
-		logging: false,
-		dialectOptions: {
-			ssl: true
-		}
-	},
-	production: {
-		use_env_variable: 'DATABASE_URL_PROD',
-		dialect: 'postgres',
-		logging: false,
-		dialectOptions: {
-			ssl: true
-		}
-	}
+  production: {
+    url: env.PRO_URL,
+    dialect: 'postgres',
+  },
+
+  development: {
+    url: env.DATABASE_URL_DEV || env.LOCAL_URL,
+    dialect: 'postgres',
+  },
+
+  test: {
+    url: env.DATABASE_URL_TEST || env.LOCAL_URL,
+    dialect: 'postgres',
+  },
 };
