@@ -3,12 +3,19 @@ import { validate, inValidName, inValidEmail, inValidPassword, magicTrimmer } fr
 import { sendErrorResponse, sendSuccessResponse } from './../utils/sendResponse';
 import { hashPassword, comparePassword } from './../utils/passwordHash';
 import uploadImage from './../services/imageuploader';
-import token from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import { SendMail, sendForgotPasswordMail } from './../services/emailsender';
 import { createToken } from './../utils/processToken';
 import { checkExpiredToken } from './../utils/dateChecker';
 import helperMethods from './../utils/helpers';
-const { User, Token, Profile } = model;
+const { 
+	User, 
+	Token, 
+	Profile 
+} = model;
+const {
+	getAllUsernameAndEmail
+} = helperMethods;
 
 //Returns token for logged/signup in Users
 const userToken = (user) => {
@@ -31,12 +38,12 @@ const AuthController = {
 	async signup (req, res, next) {
 		try {
 			// get verify token
-			const verifyId = token();
+			const verifyId = uuidv4();
 
 			// trims the req.body to remove trailling spaces
 			const userData = magicTrimmer(req.body);
 			// destructuring user details
-			const { name, username, email, password, role, phone, status } = userData;
+			const { name, username, email, password, club, role, phone, status } = userData;
 
 			// validation of inputs
 			const schema = {
@@ -45,7 +52,6 @@ const AuthController = {
 				password: inValidPassword(password)
 			};
 
-			// return console.log(schema);
 			const validateErrors = validate(schema);
 			if (validateErrors) return sendErrorResponse(res, 422, validateErrors);
 
@@ -65,10 +71,8 @@ const AuthController = {
 				password: hashedPassword,
 				phone,
 				status,
-				role:
-
-						role === 'user' ? 'user' :
-						'admin'
+				club,
+				role:	role === 'user' ? 'user' : 'admin'
 			});
 
 			//create a binary 64 string for user identity and save user
@@ -78,20 +82,21 @@ const AuthController = {
 			});
 
 			//send email verification mail
-			SendMail(email, verifyId, newUser.uuid);
+			await SendMail(email, verifyId, newUser.uuid);
+			const token = userToken(user.dataValues);
+			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 201, {
 				message: 'Kindly Verify Account To Log In, Thanks!!'
 			});
 			// res.render('verify', {message: 'Please verify your account'});
 		} catch (e) {
-			console.log(e);
 			return next(e);
 		}
 	},
 
 	async getAllUserUsernameAndEmail (req, res, next) {
 		try {
-			const usernames = await helperMethods.getAllUsernameAndEmail(User);
+			const usernames = await getAllUsernameAndEmail(User);
 
 			return sendSuccessResponse(res, 200, usernames);
 		} catch (e) {
@@ -156,7 +161,7 @@ const AuthController = {
 
 	async getNewEmailToken (req, res, next) {
 		try {
-			const verifyId = token();
+			const verifyId = uuidv4();
 			const { email } = req.body;
 
 			// get user and create another token
@@ -194,9 +199,9 @@ const AuthController = {
 			if (!checkPassword) return sendErrorResponse(res, 400, 'Incorrect Password');
 
 			// check user verification
-			if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
+			// if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
 			const token = userToken(user.dataValues);
-
+			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 200, token);
 		} catch (e) {
 			return next(e);
@@ -208,14 +213,14 @@ const AuthController = {
 			const user = req.userData;
 			return sendSuccessResponse(res, 200, user);
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 			return next(e);
 		}
 	},
 
 	async forgetPassword (req, res, next) {
 		try {
-			const forgetPasswordId = token();
+			const forgetPasswordId = uuidv4();
 			const { email } = req.body;
 			// check if the email exist
 			const user = await User.findOne({ where: { email } });
@@ -227,7 +232,7 @@ const AuthController = {
 				forgetPasswordId
 			});
 			sendForgotPasswordMail(email, forgetPasswordId, user.dataValues.uuid);
-			return sendSuccessResponse(res, 200, 'Password Reset Link Sent ');
+			return sendSuccessResponse(res, 200, `Password Reset Link Sent: ${process.env.HOST_URL}/auth/verifypassword/${forgetPasswordId}/${email}/${user.dataValues.uuid}`);
 		} catch (e) {
 			return next(e);
 		}
@@ -288,9 +293,37 @@ const AuthController = {
 		}
 	},
 
+	  /**
+   * Set password from verified password reset
+   * @param {object} req
+   * @param {object} res
+   * @returns {JSON} - a JSON response
+   * @memberof AuthController
+   */
+  async setPassword(req, res) {
+    try {
+      const { newPassword } = req.body;
+      const { uuid } = req.userData;
+			const user = await User.findOne({ where: { uuid } });
+			if (!user) return sendErrorResponse(res, 500, 'User Not Found!!');
+      const hashedPassword = hashPassword(newPassword);
+			await User.update(
+				{ password: hashedPassword },
+				{
+					returning: true,
+					where: { uuid }
+				}
+			);
+      return sendSuccessResponse(res, 200, 'Password Reset Successfull');
+    } catch (error) {
+			return next(e);
+    }
+  },
+
+
 	async updateUser (req, res, next) {
 		try {
-			let avatar, aboutDetails, profileDetails, profileData, userDetails;
+			let avatar, aboutDetails, profileDetails, profileData, userDetails, x, y;
 			const user = req.userData;
 
 			// trim the body
@@ -301,7 +334,7 @@ const AuthController = {
 			const profile = await Profile.findOne({
 				where: { user_uuid: user.uuid }
 			});
-			// return console.log(user, profile);
+			// return console.log(req.body);
 			// fetching user data
 			aboutDetails = {
 				name: name,
@@ -321,8 +354,7 @@ const AuthController = {
 					language: language,
 					website: website
 				};
-			}
-			else {
+			} else {
 				profileDetails = {
 					gender: gender,
 					shortBio: shortBio,
@@ -334,7 +366,7 @@ const AuthController = {
 			// return console.log(profileDetails, aboutDetails);
 
 			if (profile) {
-				profileData = await Profile.update(profileDetails, {
+				[y, profileData] = await Profile.update(profileDetails, {
 					returning: true,
 					where: { user_uuid: user.uuid }
 				});
@@ -346,7 +378,7 @@ const AuthController = {
 				});
 			}
 
-			userDetails = await User.update(aboutDetails, {
+			[x, userDetails] = await User.update(aboutDetails, {
 				returning: true,
 				where: { uuid: user.uuid }
 			});

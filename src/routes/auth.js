@@ -4,17 +4,30 @@ import Auth from './../middleware/Auth';
 
 const userRouter = express.Router();
 
-const prfx = 'auth';
+const {
+  signup,
+  signin,
+  me,
+  verifyUser,
+  forgetPassword,
+  verifyPasswordLink,
+  resetPassword,
+  updateUser,
+  setPassword,
+  getNewEmailToken,
+  getAllUserUsernameAndEmail
+} = AuthController;
 
-userRouter.post(`/${prfx}/signup`, AuthController.signup);
-userRouter.post(`/${prfx}/signin`, AuthController.signin);
-userRouter.get(`/${prfx}/me`, Auth, AuthController.me);
-userRouter.get(`/${prfx}/verification/:token/:email/:id`, AuthController.verifyUser);
-userRouter.post(`/${prfx}/forgetpassword`, AuthController.forgetPassword);
-userRouter.get(`/${prfx}/verifypassword/:token/:email/:id`, AuthController.verifyPasswordLink);
-userRouter.post(`/${prfx}/resetpassword`, Auth, AuthController.resetPassword);
-userRouter.patch(`/${prfx}/updateprofile`, Auth, AuthController.updateUser);
-userRouter.post(`/${prfx}/refresh-email-token`, AuthController.getNewEmailToken);
-userRouter.get(`/${prfx}/form/validations`, AuthController.getAllUserUsernameAndEmail);
+userRouter.post(`/signup`, signup);
+userRouter.post(`/signin`, signin);
+userRouter.get(`/me`, Auth, me);
+userRouter.get(`/verification/:token/:email/:id`, verifyUser);
+userRouter.post(`/forgetpassword`, forgetPassword);
+userRouter.get(`/verifypassword/:token/:email/:id`, verifyPasswordLink);
+userRouter.post(`/setpassword`, Auth, setPassword);
+userRouter.post(`/resetpassword`, Auth, resetPassword);
+userRouter.patch(`/updateprofile`, Auth, updateUser);
+userRouter.post(`/refresh-email-token`, getNewEmailToken);
+userRouter.get(`/form/validations`, getAllUserUsernameAndEmail);
 
 export default userRouter;
