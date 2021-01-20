@@ -83,7 +83,7 @@ const AuthController = {
 
 			//send email verification mail
 			await SendMail(email, verifyId, newUser.uuid);
-			const token = userToken(user.dataValues);
+			// const token = userToken(user.dataValues);
 			// res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 201, {
 				message: 'Kindly Verify Account To Log In, Thanks!!'
