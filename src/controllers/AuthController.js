@@ -220,7 +220,7 @@ const AuthController = {
 
 	async forgetPassword (req, res, next) {
 		try {
-			const forgetPasswordId = token();
+			const forgetPasswordId = uuidv4();
 			const { email } = req.body;
 			// check if the email exist
 			const user = await User.findOne({ where: { email } });
@@ -232,7 +232,7 @@ const AuthController = {
 				forgetPasswordId
 			});
 			sendForgotPasswordMail(email, forgetPasswordId, user.dataValues.uuid);
-			return sendSuccessResponse(res, 200, 'Password Reset Link Sent ');
+			return sendSuccessResponse(res, 200, `Password Reset Link Sent: ${process.env.HOST_URL}/auth/verifypassword/${forgetPasswordId}/${email}/${user.dataValues.uuid}`);
 		} catch (e) {
 			return next(e);
 		}
@@ -292,6 +292,34 @@ const AuthController = {
 			return next(e);
 		}
 	},
+
+	  /**
+   * Set password from verified password reset
+   * @param {object} req
+   * @param {object} res
+   * @returns {JSON} - a JSON response
+   * @memberof AuthController
+   */
+  async setPassword(req, res) {
+    try {
+      const { newPassword } = req.body;
+      const { uuid } = req.userData;
+			const user = await User.findOne({ where: { uuid } });
+			if (!user) return sendErrorResponse(res, 500, 'User Not Found!!');
+      const hashedPassword = hashPassword(newPassword);
+			await User.update(
+				{ password: hashedPassword },
+				{
+					returning: true,
+					where: { uuid }
+				}
+			);
+      return sendSuccessResponse(res, 200, 'Password Reset Successfull');
+    } catch (error) {
+			return next(e);
+    }
+  },
+
 
 	async updateUser (req, res, next) {
 		try {
