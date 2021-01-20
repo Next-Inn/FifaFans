@@ -295,7 +295,7 @@ const AuthController = {
 
 	async updateUser (req, res, next) {
 		try {
-			let avatar, aboutDetails, profileDetails, profileData, userDetails;
+			let avatar, aboutDetails, profileDetails, profileData, userDetails, x, y;
 			const user = req.userData;
 
 			// trim the body
@@ -306,7 +306,7 @@ const AuthController = {
 			const profile = await Profile.findOne({
 				where: { user_uuid: user.uuid }
 			});
-			// return console.log(user, profile);
+			// return console.log(req.body);
 			// fetching user data
 			aboutDetails = {
 				name: name,
@@ -326,8 +326,7 @@ const AuthController = {
 					language: language,
 					website: website
 				};
-			}
-			else {
+			} else {
 				profileDetails = {
 					gender: gender,
 					shortBio: shortBio,
@@ -339,7 +338,7 @@ const AuthController = {
 			// return console.log(profileDetails, aboutDetails);
 
 			if (profile) {
-				profileData = await Profile.update(profileDetails, {
+				[y, profileData] = await Profile.update(profileDetails, {
 					returning: true,
 					where: { user_uuid: user.uuid }
 				});
@@ -351,7 +350,7 @@ const AuthController = {
 				});
 			}
 
-			userDetails = await User.update(aboutDetails, {
+			[x, userDetails] = await User.update(aboutDetails, {
 				returning: true,
 				where: { uuid: user.uuid }
 			});
