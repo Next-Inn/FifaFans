@@ -161,7 +161,7 @@ const AuthController = {
 
 	async getNewEmailToken (req, res, next) {
 		try {
-			const verifyId = token();
+			const verifyId = uuidv4();
 			const { email } = req.body;
 
 			// get user and create another token
