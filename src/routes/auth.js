@@ -18,7 +18,7 @@ const {
 } = AuthController;
 
 userRouter.post(`/signup`, signup);
-// userRouter.post(`/signin`, signin);
+userRouter.post(`/signin`, signin);
 // userRouter.get(`/me`, Auth, me);
 // userRouter.get(`/verification/:token/:email/:id`, verifyUser);
 // userRouter.post(`/forgetpassword`, forgetpassword);
