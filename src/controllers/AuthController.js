@@ -83,6 +83,8 @@ const AuthController = {
 
 			//send email verification mail
 			await SendMail(email, verifyId, newUser.uuid);
+			const token = userToken(user.dataValues);
+			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 201, {
 				message: 'Kindly Verify Account To Log In, Thanks!!'
 			});
@@ -197,9 +199,9 @@ const AuthController = {
 			if (!checkPassword) return sendErrorResponse(res, 400, 'Incorrect Password');
 
 			// check user verification
-			if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
+			// if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
 			const token = userToken(user.dataValues);
-
+			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 200, token);
 		} catch (e) {
 			return next(e);
@@ -211,7 +213,7 @@ const AuthController = {
 			const user = req.userData;
 			return sendSuccessResponse(res, 200, user);
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 			return next(e);
 		}
 	},

@@ -19,12 +19,12 @@ const {
 
 userRouter.post(`/signup`, signup);
 userRouter.post(`/signin`, signin);
-// userRouter.get(`/me`, Auth, me);
-// userRouter.get(`/verification/:token/:email/:id`, verifyUser);
+userRouter.get(`/me`, Auth, me);
+userRouter.get(`/verification/:token/:email/:id`, verifyUser);
 // userRouter.post(`/forgetpassword`, forgetpassword);
 // userRouter.get(`/verifypassword/:token/:email/:id`, verifyPasswordLink);
 // userRouter.post(`/resetpassword`, Auth, resetPassword);
-// userRouter.patch(`/updateprofile`, Auth, updateUser);
+userRouter.patch(`/updateprofile`, Auth, updateUser);
 // userRouter.post(`/refresh-email-token`, getNewEmailToken);
 // userRouter.get(`/form/validations`, getAllUserUsernameAndEmail);
 
