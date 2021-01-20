@@ -8,7 +8,7 @@ const SendMail = (to, token, id) => {
 		from: 'admin@fifafans.club',
 		to,
 		subject: 'Welcome To Fifa Fans',
-		text: `Hi, \n\nThank You For Fifa Fans \nClick on this link to verify your email ${hostUrl}/api/v1/auth/verification/${token}/${to}/${id}`
+		text: `Hi, \n\nThank You For Fifa Fans \nClick on this link to verify your email ${hostUrl}/auth/verification/${token}/${to}/${id}`
 	};
 
 	transporter.sendMail(mailOptions, (error, info) => {

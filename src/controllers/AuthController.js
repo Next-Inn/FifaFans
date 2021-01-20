@@ -3,12 +3,19 @@ import { validate, inValidName, inValidEmail, inValidPassword, magicTrimmer } fr
 import { sendErrorResponse, sendSuccessResponse } from './../utils/sendResponse';
 import { hashPassword, comparePassword } from './../utils/passwordHash';
 import uploadImage from './../services/imageuploader';
-import token from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import { SendMail, sendForgotPasswordMail } from './../services/emailsender';
 import { createToken } from './../utils/processToken';
 import { checkExpiredToken } from './../utils/dateChecker';
 import helperMethods from './../utils/helpers';
-const { User, Token, Profile } = model;
+const { 
+	User, 
+	Token, 
+	Profile 
+} = model;
+const {
+	getAllUsernameAndEmail
+} = helperMethods;
 
 //Returns token for logged/signup in Users
 const userToken = (user) => {
@@ -31,12 +38,12 @@ const AuthController = {
 	async signup (req, res, next) {
 		try {
 			// get verify token
-			const verifyId = token();
+			const verifyId = uuidv4();
 
 			// trims the req.body to remove trailling spaces
 			const userData = magicTrimmer(req.body);
 			// destructuring user details
-			const { name, username, email, password, role, phone, status } = userData;
+			const { name, username, email, password, club, role, phone, status } = userData;
 
 			// validation of inputs
 			const schema = {
@@ -45,7 +52,6 @@ const AuthController = {
 				password: inValidPassword(password)
 			};
 
-			// return console.log(schema);
 			const validateErrors = validate(schema);
 			if (validateErrors) return sendErrorResponse(res, 422, validateErrors);
 
@@ -65,10 +71,8 @@ const AuthController = {
 				password: hashedPassword,
 				phone,
 				status,
-				role:
-
-						role === 'user' ? 'user' :
-						'admin'
+				club,
+				role:	role === 'user' ? 'user' : 'admin'
 			});
 
 			//create a binary 64 string for user identity and save user
@@ -78,20 +82,19 @@ const AuthController = {
 			});
 
 			//send email verification mail
-			SendMail(email, verifyId, newUser.uuid);
+			await SendMail(email, verifyId, newUser.uuid);
 			return sendSuccessResponse(res, 201, {
 				message: 'Kindly Verify Account To Log In, Thanks!!'
 			});
 			// res.render('verify', {message: 'Please verify your account'});
 		} catch (e) {
-			console.log(e);
 			return next(e);
 		}
 	},
 
 	async getAllUserUsernameAndEmail (req, res, next) {
 		try {
-			const usernames = await helperMethods.getAllUsernameAndEmail(User);
+			const usernames = await getAllUsernameAndEmail(User);
 
 			return sendSuccessResponse(res, 200, usernames);
 		} catch (e) {
