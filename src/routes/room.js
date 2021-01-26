@@ -8,15 +8,17 @@ const {
   getMyGroups,
   getGroupChats,
   exitGroup,
-  checkMembership
+  checkMembership,
+  joinRoom
 } = RoomController;
 
 const router = express.Router();
 router.post('/create-room', Auth, createRoom);
-// router.get('/list-rooms', Auth, getListOfGroups);
-// router.get('/list-user-rooms', Auth, getMyGroups);
-// router.get('/room', getGroupChats);
-// router.delete('/exit-room', Auth, exitGroup);
-// router.get('/check-membership', Auth, checkMembership);
+router.get('/list-rooms', Auth, getListOfGroups);
+router.get('/list-user-rooms', Auth, getMyGroups);
+router.get('/chat', getGroupChats);
+router.delete('/exit-room', Auth, exitGroup);
+router.get('/check-membership', Auth, checkMembership);
+router.post('/join', Auth, joinRoom);
 
 export default router;

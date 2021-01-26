@@ -198,7 +198,7 @@ const AuthController = {
 			// check user verification
 			// if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
 			const token = userToken(user.dataValues);
-			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
+			res.cookie('token', token.token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 200, token);
 		} catch (e) {
 			return res.status(500).send(e.message)
