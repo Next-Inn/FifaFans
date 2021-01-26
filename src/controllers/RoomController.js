@@ -1,8 +1,6 @@
 import model from './../models';
 import { sendErrorResponse, sendSuccessResponse } from './../utils/sendResponse';
 import helperMethods from './../utils/helpers';
-import uploadImage from './../services/imageuploader';
-// import Canvas from '../utils/canvas';
 const { User, Profile, Post, Friend, ChatRoom, ChatRoomMember, RoomChat } = model;
 
 const RoomController = {
@@ -13,12 +11,9 @@ const RoomController = {
 			const { groupname, description } = req.body;
 			if (!groupname && !description)
 				return sendErrorResponse(res, 409, 'Groupname and description cannot be empty!!!');
-			// const file = await Canvas.createBanner(groupname);
-			// const url = await uploadImage(file, groupname);
 			const group = await ChatRoom.create({
 				name: groupname,
 				description,
-				// icon: url,
 				visibility: 'private'
 			});
 			if (!group) return sendErrorResponse(res, 500, 'Failed to create group please try again later');
@@ -27,9 +22,8 @@ const RoomController = {
 				member_uuid: uuid,
 				is_banned: false
 			});
-			return sendSuccessResponse(res, 200, 'Successfully created a group');
+			return sendSuccessResponse(res, 200, 'Successfully created a group', group, groupMember);
 		} catch (error) {
-			console.log(error);
 			return sendErrorResponse(res, 500, error);
 		}
 	},
@@ -89,7 +83,7 @@ const RoomController = {
 		try {
 			const { uuid } = req.userData;
 			const { group_uuid } = req.query;
-			const chats = await helperMethods.exitGroup(ChatRoomMember, group_uuid, uuid);
+			await helperMethods.exitGroup(ChatRoomMember, group_uuid, uuid);
 			return sendSuccessResponse(res, 200, 'You have successfully exited the room');
 		} catch (error) {
 			console.log(error);
@@ -101,7 +95,7 @@ const RoomController = {
 		try {
 			const { uuid } = req.userData;
 			const { group_uuid } = req.query;
-			console.log(group_uuid);
+			// console.log(group_uuid);
 			const room = await helperMethods.checkRoomMember(uuid, group_uuid);
 			if (!room) return sendErrorResponse(res, 200, 'not a member');
 			return sendSuccessResponse(res, 200, room.dataValues);
