@@ -1,8 +1,6 @@
 import model from './../models';
 import { sendErrorResponse, sendSuccessResponse } from './../utils/sendResponse';
 import helperMethods from './../utils/helpers';
-import uploadImage from './../services/imageuploader';
-// import Canvas from '../utils/canvas';
 const { User, Profile, Post, Friend, ChatRoom, ChatRoomMember, RoomChat } = model;
 
 const RoomController = {
@@ -13,12 +11,9 @@ const RoomController = {
 			const { groupname, description } = req.body;
 			if (!groupname && !description)
 				return sendErrorResponse(res, 409, 'Groupname and description cannot be empty!!!');
-			// const file = await Canvas.createBanner(groupname);
-			// const url = await uploadImage(file, groupname);
 			const group = await ChatRoom.create({
 				name: groupname,
 				description,
-				// icon: url,
 				visibility: 'private'
 			});
 			if (!group) return sendErrorResponse(res, 500, 'Failed to create group please try again later');
@@ -27,17 +22,34 @@ const RoomController = {
 				member_uuid: uuid,
 				is_banned: false
 			});
-			return sendSuccessResponse(res, 200, 'Successfully created a group');
+			return sendSuccessResponse(res, 200, { message: 'Successfully created a group', data: { group, groupMember }});
 		} catch (error) {
-			console.log(error);
+			return sendErrorResponse(res, 500, error);
+		}
+	},
+
+	async joinRoom (req, res) {
+		try {
+			const { uuid } = req.userData;
+			const { chatroom_uuid } = req.query;
+			const room = await ChatRoomMember.findOne({ where: { member_uuid: uuid, chatroom_uuid } });
+			if (room) return res.status(401).send('You already belong to this room');
+			const groupMember = await ChatRoomMember.create({
+				chatroom_uuid,
+				member_uuid: uuid,
+				is_banned: false
+			});
+			return sendSuccessResponse(res, 200, { message: 'Successfully joined a group', data: groupMember });
+		} catch (error) {
+			console.error(error);
 			return sendErrorResponse(res, 500, error);
 		}
 	},
 
 	/**this method handles the listing of groups
-         * @param req this is the incoming request
-         * @param res this is the response after the request have been implemented
-         */
+	 * @param req this is the incoming request
+	 * @param res this is the response after the request have been implemented
+	 */
 	async getListOfGroups (req, res) {
 		try {
 			const { uuid } = req.userData;
@@ -50,9 +62,9 @@ const RoomController = {
 	},
 
 	/**this method handles the listing of users group
-         * @param req this is the incoming request
-         * @param res this is the response after the request have been implemented
-         */
+	 * @param req this is the incoming request
+	 * @param res this is the response after the request have been implemented
+	 */
 	async getMyGroups (req, res) {
 		try {
 			const { uuid } = req.userData;
@@ -66,30 +78,32 @@ const RoomController = {
 	},
 
 	/**this method handles listing chats in a group
-         * @param req this is the incoming request
-         * @param res this is the response after the request have been implemented
-         */
+	 * @param req this is the incoming request
+	 * @param res this is the response after the request have been implemented
+	 */
 	async getGroupChats (req, res) {
 		try {
 			// const { uuid } = req.userData;
 			const { group_uuid } = req.query;
+			console.log(group_uuid);
 			const data = await helperMethods.getGroupChats(group_uuid, RoomChat, ChatRoom);
-			return res.render('room', { data });
+			return sendSuccessResponse(res, 200, { message: "success", data });
 		} catch (e) {
-			console.log(e);
 			return sendErrorResponse(res, 500, e);
 		}
 	},
-	/**this method handles listing chats in a group
-         * @param req this is the incoming request
-         * @param res this is the response after the request have been implemented
-         */
+
+	/*
+		*this method handles listing chats in a group
+	 * @param req this is the incoming request
+	 * @param res this is the response after the request have been implemented
+	*/
 
 	async exitGroup (req, res) {
 		try {
 			const { uuid } = req.userData;
-			const { group_uuid } = req.query;
-			const chats = await helperMethods.exitGroup(ChatRoomMember, group_uuid, uuid);
+			const { member_uuid, chatroom_uuid } = req.query;
+			await helperMethods.exitGroup(ChatRoomMember, member_uuid, chatroom_uuid);
 			return sendSuccessResponse(res, 200, 'You have successfully exited the room');
 		} catch (error) {
 			console.log(error);
@@ -101,7 +115,7 @@ const RoomController = {
 		try {
 			const { uuid } = req.userData;
 			const { group_uuid } = req.query;
-			console.log(group_uuid);
+			// console.log(group_uuid);
 			const room = await helperMethods.checkRoomMember(uuid, group_uuid);
 			if (!room) return sendErrorResponse(res, 200, 'not a member');
 			return sendSuccessResponse(res, 200, room.dataValues);

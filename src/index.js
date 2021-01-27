@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import env from './config/env';
 import routes from './routes';
 import multer from 'multer';
+import bodyParser from 'body-parser';
 
 const upload = multer();
 

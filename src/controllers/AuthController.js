@@ -8,10 +8,10 @@ import { SendMail, sendForgotPasswordMail } from './../services/emailsender';
 import { createToken } from './../utils/processToken';
 import { checkExpiredToken } from './../utils/dateChecker';
 import helperMethods from './../utils/helpers';
-const { 
-	User, 
-	Token, 
-	Profile 
+const {
+	User,
+	Token,
+	Profile
 } = model;
 const {
 	getAllUsernameAndEmail
@@ -35,7 +35,7 @@ const AuthController = {
  *
  * User Sign up logic
  */
-	async signup (req, res, next) {
+	async signup(req, res, next) {
 		try {
 			// get verify token
 			const verifyId = uuidv4();
@@ -70,9 +70,9 @@ const AuthController = {
 				email,
 				password: hashedPassword,
 				phone,
-				status,
+				status: status.toLowerCase(),
 				club,
-				role:	role === 'user' ? 'user' : 'admin'
+				role: role === 'user' ? 'user' : 'admin'
 			});
 
 			//create a binary 64 string for user identity and save user
@@ -83,24 +83,21 @@ const AuthController = {
 
 			//send email verification mail
 			await SendMail(email, verifyId, newUser.uuid);
-			// const token = userToken(user.dataValues);
-			// res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 201, {
 				message: 'Kindly Verify Account To Log In, Thanks!!'
 			});
-			// res.render('verify', {message: 'Please verify your account'});
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async getAllUserUsernameAndEmail (req, res, next) {
+	async getAllUserUsernameAndEmail(req, res, next) {
 		try {
 			const usernames = await getAllUsernameAndEmail(User);
 
 			return sendSuccessResponse(res, 200, usernames);
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
@@ -111,7 +108,7 @@ const AuthController = {
 	 * @query {uuid} res
 	 * @param {*} next
 	 */
-	async verifyUser (req, res, next) {
+	async verifyUser(req, res, next) {
 		try {
 			// extracting the token and id from the query
 			const { token, id } = req.params;
@@ -155,11 +152,11 @@ const AuthController = {
 			);
 			return sendSuccessResponse(res, 200, '<h2>Your Account has been Verified Successfully</h2>');
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async getNewEmailToken (req, res, next) {
+	async getNewEmailToken(req, res, next) {
 		try {
 			const verifyId = uuidv4();
 			const { email } = req.body;
@@ -178,11 +175,11 @@ const AuthController = {
 			SendMail(email, verifyId, user.dataValues.uuid);
 			return sendSuccessResponse(res, 200, 'Link Sent, Please Check your mail and Verify Account, Thanks!!!');
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async signin (req, res, next) {
+	async signin(req, res, next) {
 		try {
 			// extracting user data
 			const { email, password, username } = req.body;
@@ -190,7 +187,7 @@ const AuthController = {
 			// checking if the user exist
 			const user =
 				email ? await User.findOne({ where: { email } }) :
-				await User.findOne({ where: { username } });
+					await User.findOne({ where: { username } });
 
 			if (!user) return sendErrorResponse(res, 404, 'User Not Found!!');
 
@@ -201,24 +198,24 @@ const AuthController = {
 			// check user verification
 			// if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
 			const token = userToken(user.dataValues);
-			res.cookie('token', token, { maxAge: 70000000, httpOnly: true });
+			res.cookie('token', token.token, { maxAge: 70000000, httpOnly: true });
 			return sendSuccessResponse(res, 200, token);
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async me (req, res, next) {
+	async me(req, res, next) {
 		try {
 			const user = req.userData;
 			return sendSuccessResponse(res, 200, user);
 		} catch (e) {
 			console.error(e);
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async forgetPassword (req, res, next) {
+	async forgetPassword(req, res, next) {
 		try {
 			const forgetPasswordId = uuidv4();
 			const { email } = req.body;
@@ -234,11 +231,11 @@ const AuthController = {
 			sendForgotPasswordMail(email, forgetPasswordId, user.dataValues.uuid);
 			return sendSuccessResponse(res, 200, `Password Reset Link Sent: ${process.env.HOST_URL}/auth/verifypassword/${forgetPasswordId}/${email}/${user.dataValues.uuid}`);
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async verifyPasswordLink (req, res, next) {
+	async verifyPasswordLink(req, res, next) {
 		try {
 			const { token, id, email } = req.params;
 			const verifyToken = await Token.findOne({
@@ -266,11 +263,11 @@ const AuthController = {
 
 			return sendSuccessResponse(res, 200, { email, message: 'User Confirmed, redirect to password reset page..' });
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	async resetPassword (req, res, next) {
+	async resetPassword(req, res, next) {
 		try {
 			const { email } = req.userData;
 			const { newPassword, oldPassword } = req.body;
@@ -289,24 +286,24 @@ const AuthController = {
 
 			return sendSuccessResponse(res, 200, 'Password Reset Successfull ');
 		} catch (e) {
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	},
 
-	  /**
-   * Set password from verified password reset
-   * @param {object} req
-   * @param {object} res
-   * @returns {JSON} - a JSON response
-   * @memberof AuthController
-   */
-  async setPassword(req, res) {
-    try {
-      const { newPassword } = req.body;
-      const { uuid } = req.userData;
+	/**
+ * Set password from verified password reset
+ * @param {object} req
+ * @param {object} res
+ * @returns {JSON} - a JSON response
+ * @memberof AuthController
+ */
+	async setPassword(req, res) {
+		try {
+			const { newPassword } = req.body;
+			const { uuid } = req.userData;
 			const user = await User.findOne({ where: { uuid } });
 			if (!user) return sendErrorResponse(res, 500, 'User Not Found!!');
-      const hashedPassword = hashPassword(newPassword);
+			const hashedPassword = hashPassword(newPassword);
 			await User.update(
 				{ password: hashedPassword },
 				{
@@ -314,14 +311,14 @@ const AuthController = {
 					where: { uuid }
 				}
 			);
-      return sendSuccessResponse(res, 200, 'Password Reset Successfull');
-    } catch (error) {
-			return next(e);
-    }
-  },
+			return sendSuccessResponse(res, 200, 'Password Reset Successfull');
+		} catch (error) {
+			return res.status(500).send(e.message)
+		}
+	},
 
 
-	async updateUser (req, res, next) {
+	async updateUser(req, res, next) {
 		try {
 			let avatar, aboutDetails, profileDetails, profileData, userDetails, x, y;
 			const user = req.userData;
@@ -386,7 +383,7 @@ const AuthController = {
 			return sendSuccessResponse(res, 200, { userDetails, profileData });
 		} catch (e) {
 			console.log(e);
-			return next(e);
+			return res.status(500).send(e.message)
 		}
 	}
 };

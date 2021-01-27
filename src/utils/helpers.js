@@ -587,10 +587,10 @@ const helperMethods = {
 	},
 
 	// exit a group
-	async exitGroup(table, group_uuid, user_uuid){
+	async exitGroup(table, member_uuid, chatroom_uuid){
 		try {
 		 await table.destroy({
-		 where: {  group_uuid, user_uuid }
+		 where: {  member_uuid, chatroom_uuid }
 		});
 		} catch (error) {
 		 console.log(error);
