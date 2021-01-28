@@ -8,25 +8,25 @@ const PostController = {
     // create a post 
     async createPost(req, res) {
         try {
-          let file = '';
+          let media = '';
           const { uuid, email, name} = req.userData;
           const { post } = req.body;
           if (!post) return sendErrorResponse(res, 422, 'post body cannot be empty');
           if (req.file) {
             console.log(req.file)
-            file = await uploadImage(req.file)
-            
+            media = await uploadImage(req.file);
           }
+return console.log(post);
           await Post.create({
-              user_uuid: uuid,
-              owner_name: name,
-              post,
-              media:file
+            user_uuid: uuid,
+            owner_name: name,
+            post,
+            media
           });
-          return sendSuccessResponse(res, 200, 'post created successfully');
+          return sendSuccessResponse(res, 200, 'Post created successfully');
         } catch (error) {
-            console.log(error);
-            return sendErrorResponse(res, 500, 'An error occurred trying to create a post');
+          console.log(error);
+          return sendErrorResponse(res, 500, 'An error occurred trying to create a post');
         }
     },
 
