@@ -14,7 +14,7 @@ const router = Router();
 // }));
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
-// router.use('/post', postRoutes);
+router.use('/post', postRoutes);
 router.use('/room', roomRoutes);
 router.use('/chat', chatRoutes);
 
