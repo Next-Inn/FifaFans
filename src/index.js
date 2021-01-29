@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import env from './config/env';
 import routes from './routes';
 import multer from 'multer';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 
 const upload = multer();
 
@@ -18,15 +18,16 @@ const production = env.NODE_ENV === 'production';
 // Create global app object
 const app = express();
 
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(upload.single('file'));
+
 app.use(passport.initialize());
 app.use(cors());
 app.use(cookieParser());
 
 // Normal express config defaults
 app.use(morgan('dev'));
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 app.use(methodOverride());
 if (!production) {
