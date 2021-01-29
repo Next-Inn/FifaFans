@@ -1,9 +1,5 @@
-# FifaFans
-FifaFan is a plattform that connect footabl players, fans, personels.
-
-[![CircleCI](https://circleci.com/bb/kodehauzteam/mediamall-backend.svg?style=svg)](https://circleci.com/bb/kodehauzteam/mediamall-backend)
----
-
+# SportFan
+SportFan is a plattform that connect footabl players, fans, personels.
 #### Technologies
 
 - [Es6+ Javascript](https://www.ecma-international.org/ecma-262/9.0/index.html)
@@ -34,7 +30,7 @@ FifaFan is a plattform that connect footabl players, fans, personels.
 - [Ogochukwu Odom](https://github.com/odomfavour)
 - [Promise Orung](https://github.com/Orung)
 
-`#`NextInn @ 2020
+`#`NextInn @ 2021
 ==============
 
-# FifaFans
+# SportFan
