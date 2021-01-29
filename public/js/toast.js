@@ -1,6 +1,6 @@
 const TOAST = {
     welcomeToast() {
-        tata.info('Welcome', 'Welcome to FifaFans Meet your fellow fan, player and coach', {
+        tata.info('Welcome', 'Welcome to sportfans Meet your fellow fan, player and coach', {
             duration: 5000
           })
     },
