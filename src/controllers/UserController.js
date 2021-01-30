@@ -20,58 +20,54 @@ function getMediaType(data) {
     return `<img src="${data.media}" class="img-fluid" width="526" alt=""></img>`
   }
 
-  if ( type == undefined) {
+  if (type == undefined) {
     return ``;
   }
- 
+
 }
 
 const UserController = {
   async searchUsers(req, res) {
-      try {
-        const { input } = req.query;
-        const users = await helperMethods.searchForUser(User, input);
-        return sendSuccessResponse(res, 200, users);
-      } catch (e) {
-          console.log(e);
-          return sendErrorResponse(res, 500, 'An error occurred finding user');
-      };
+    try {
+      const { input } = req.query;
+      const users = await helperMethods.searchForUser(User, input);
+      return sendSuccessResponse(res, 200, users);
+    } catch (e) {
+      return sendErrorResponse(res, 500, 'An error occurred finding user');
+    };
   },
-  
+
   // view a user detail
   async viewUserDetails(req, res) {
-      try {
-         let id;
-         let uuid;
-         let follow;
-         if (req.userData) {
-          uuid = req.userData.uuid
-         }
-         const { user_uuid, my_uuid } = req.query;
-         if (!user_uuid) {
-           id = uuid;
-         } else {
-           follow = await helperMethods.checkForFollower(Follower, user_uuid, my_uuid);
-           id = user_uuid
-         }
-         const user = await helperMethods.getAUserByUuid(User, id);
-         if (!user) return sendErrorResponse(res, 404, 'User not found');
-         if (!follow) { 
-           user.following  = false
-          } else {
-            user.following = true
-          }
-        //  return sendSuccessResponse(res, 200, user);
-        const posts = await user.posts.map((x) => {
-         x.media = getMediaType(x);
-         return x;
-        })
-        user.posts = posts;
-        return res.render('friendprofile', { user });
-      } catch (e) {
-          console.log(e);
-          return sendErrorResponse(res, 500, 'An error occurred viewing user details');
+    try {
+      let id;
+      let uuid;
+      let follow;
+      uuid = req.userData.uuid
+      const { user_uuid, my_uuid } = req.query;
+      if (!user_uuid) {
+        id = uuid;
+      } else {
+        follow = await helperMethods.checkForFollower(Follower, user_uuid, my_uuid);
+        id = user_uuid
       }
+      const user = await helperMethods.getAUserByUuid(User, id);
+      if (!user) return sendErrorResponse(res, 404, 'User not found');
+      if (!follow) {
+        user.following = false
+      } else {
+        user.following = true
+      }
+      //  return sendSuccessResponse(res, 200, user);
+      const posts = await user.posts.map((x) => {
+        x.media = getMediaType(x);
+        return x;
+      })
+      user.posts = posts;
+      return sendSuccessResponse(res, 200, { user });
+    } catch (e) {
+      return sendErrorResponse(res, 500, 'An error occurred viewing user details');
+    }
   }
 };
 
