@@ -1,16 +1,26 @@
 import express from 'express';
 import UserController from './../controllers/UserController';
-import FriendController from './../controllers/FriendController';
 import FollowerController from './../controllers/FollowerController';
 import Auth from './../middleware/Auth';
 
 const router = express.Router();
 
-router.get('/search-user', UserController.searchUsers);
-router.get('/view-user-details', Auth, UserController.viewUserDetails);
-router.post('/follow-user', Auth, FollowerController.followUser);
-router.get('/list-followers', Auth, FollowerController.listUserFollowers);
-router.get('/check-if-follow', Auth, FollowerController.CheckFollowUser);
-router.put('/un-follow-user', Auth, FollowerController.unFollowUser);
+const {
+  searchUsers,
+  viewUserDetails,
+} = UserController;
+const {
+  followUser,
+  listUserFollowers,
+  CheckFollowUser,
+  unFollowUser
+} = FollowerController;
+
+router.get('/search-user', searchUsers); // ?input=[]
+router.get('/view-user-details', Auth, viewUserDetails); // ?user_uuid=[]&my_uuid=[]
+router.post('/follow-user', Auth, followUser); // ?user_uuid=[]
+router.get('/list-followers', Auth, listUserFollowers);
+router.get('/check-if-follow', Auth, CheckFollowUser);  // ?user_uuid=[]
+router.patch('/un-follow-user', Auth, unFollowUser); // ?user_uuid=[]
 
 export default router;
