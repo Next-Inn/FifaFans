@@ -25,7 +25,7 @@ userRouter.get(`/verification/:token/:email/:id`, verifyUser);
 userRouter.post(`/forgetpassword`, forgetPassword);
 userRouter.get(`/verifypassword/:token/:email/:id`, verifyPasswordLink);
 userRouter.post(`/setpassword`, Auth, setPassword);
-userRouter.post(`/resetpassword`, Auth, resetPassword);
+userRouter.patch(`/resetpassword`, Auth, resetPassword);
 userRouter.patch(`/updateprofile`, Auth, updateUser);
 userRouter.post(`/refresh-email-token`, getNewEmailToken);
 userRouter.get(`/form/validations`, getAllUserUsernameAndEmail);
