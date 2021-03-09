@@ -160,7 +160,7 @@ const AuthController = {
 		try {
 			const verifyId = uuidv4();
 			const { email } = req.body;
-
+			if (!email) return sendErrorResponse(res, 404, 'Please provide email address');
 			// get user and create another token
 			const user = await User.findOne({ where: { email } });
 
