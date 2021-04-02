@@ -204,7 +204,8 @@ const helperMethods = {
 				]
 			}
 		});
-		return user.toJSON();
+		if (user) return user.toJSON();
+		else return user;
 	},
 
 	//find user by username
