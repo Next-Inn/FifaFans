@@ -32,7 +32,6 @@ const FollowerController = {
       await unFollowUser(Follower, uuid, user_uuid);
       return sendSuccessResponse(res, 200, 'unFollowed successfully');
     } catch (e) {
-      console.log(e);
       return sendErrorResponse(res, 500, 'An error occurred following user');
     };
   },
@@ -46,7 +45,6 @@ const FollowerController = {
       if (!user) return sendErrorResponse(res, 404, 'User not found');
       return sendSuccessResponse(res, 200, user);
     } catch (e) {
-      console.log(e);
       return sendErrorResponse(res, 500, 'An error occurred viewing user details');
     }
   },
@@ -60,7 +58,6 @@ const FollowerController = {
       const check = user ? true : false;
       return sendSuccessResponse(res, 201, check);
     } catch (e) {
-      console.log(e);
       return sendErrorResponse(res, 500, 'An error occurred following user');
     };
   },

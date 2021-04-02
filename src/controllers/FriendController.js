@@ -13,7 +13,6 @@ const FriendController = {
     await helperMethods.createFriendShip(Friend, uuid, friend_uuid, friend_name);
     return sendSuccessResponse(res, 200, 'We have sent a request to the user');
    } catch (e) {
-      console.log(e);
       return sendErrorResponse(res, 500, 'An error occurred please try again');
    }
   },
