@@ -4,7 +4,7 @@ import helperMethods from './../utils/helpers';
 const { User, Profile, Post, Friend, ChatRoom, ChatRoomMember, RoomChat } = model;
 
 const RoomController = {
-	async createRoom (req, res) {
+	async createRoom(req, res) {
 		try {
 			const { uuid } = req.userData;
 			if (!uuid) return res.status(403).send('Access denied');
@@ -22,13 +22,13 @@ const RoomController = {
 				member_uuid: uuid,
 				is_banned: false
 			});
-			return sendSuccessResponse(res, 200, { message: 'Successfully created a group', data: { group, groupMember }});
+			return sendSuccessResponse(res, 200, { message: 'Successfully created a group', data: { group, groupMember } });
 		} catch (error) {
 			return sendErrorResponse(res, 500, error);
 		}
 	},
 
-	async joinRoom (req, res) {
+	async joinRoom(req, res) {
 		try {
 			const { uuid } = req.userData;
 			const { chatroom_uuid } = req.query;
@@ -41,7 +41,6 @@ const RoomController = {
 			});
 			return sendSuccessResponse(res, 200, { message: 'Successfully joined a group', data: groupMember });
 		} catch (error) {
-			console.error(error);
 			return sendErrorResponse(res, 500, error);
 		}
 	},
@@ -50,7 +49,7 @@ const RoomController = {
 	 * @param req this is the incoming request
 	 * @param res this is the response after the request have been implemented
 	 */
-	async getListOfGroups (req, res) {
+	async getListOfGroups(req, res) {
 		try {
 			const { uuid } = req.userData;
 			if (!uuid) return res.status(403).send('Access denied');
@@ -65,14 +64,13 @@ const RoomController = {
 	 * @param req this is the incoming request
 	 * @param res this is the response after the request have been implemented
 	 */
-	async getMyGroups (req, res) {
+	async getMyGroups(req, res) {
 		try {
 			const { uuid } = req.userData;
 			if (!uuid) return res.status(403).send('Access denied');
 			const groups = await helperMethods.getUserGroups(uuid, ChatRoomMember);
 			return sendSuccessResponse(res, 200, { message: 'Success', data: groups });
 		} catch (e) {
-			console.log(e);
 			return res.status(500).send(e);
 		}
 	},
@@ -81,11 +79,10 @@ const RoomController = {
 	 * @param req this is the incoming request
 	 * @param res this is the response after the request have been implemented
 	 */
-	async getGroupChats (req, res) {
+	async getGroupChats(req, res) {
 		try {
 			// const { uuid } = req.userData;
 			const { group_uuid } = req.query;
-			console.log(group_uuid);
 			const data = await helperMethods.getGroupChats(group_uuid, RoomChat, ChatRoom);
 			return sendSuccessResponse(res, 200, { message: "success", data });
 		} catch (e) {
@@ -99,23 +96,21 @@ const RoomController = {
 	 * @param res this is the response after the request have been implemented
 	*/
 
-	async exitGroup (req, res) {
+	async exitGroup(req, res) {
 		try {
 			const { uuid } = req.userData;
 			const { member_uuid, chatroom_uuid } = req.query;
 			await helperMethods.exitGroup(ChatRoomMember, member_uuid, chatroom_uuid);
 			return sendSuccessResponse(res, 200, 'You have successfully exited the room');
 		} catch (error) {
-			console.log(error);
 			return sendErrorResponse(res, 500, error);
 		}
 	},
 
-	async checkMembership (req, res) {
+	async checkMembership(req, res) {
 		try {
 			const { uuid } = req.userData;
 			const { group_uuid } = req.query;
-			// console.log(group_uuid);
 			const room = await helperMethods.checkRoomMember(uuid, group_uuid);
 			if (!room) return sendErrorResponse(res, 200, 'not a member');
 			return sendSuccessResponse(res, 200, room.dataValues);

@@ -210,7 +210,6 @@ const AuthController = {
 			const user = req.userData;
 			return sendSuccessResponse(res, 200, user);
 		} catch (e) {
-			console.error(e);
 			return res.status(500).send(e.message)
 		}
 	},
@@ -382,7 +381,6 @@ const AuthController = {
 
 			return sendSuccessResponse(res, 200, { userDetails, profileData });
 		} catch (e) {
-			console.log(e);
 			return res.status(500).send(e.message)
 		}
 	}

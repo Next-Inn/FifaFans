@@ -6,7 +6,6 @@ const { User, Profile, Follower } = model;
 
 // helper method for mediaType
 function getMediaType(data) {
-  console.log(data);
   const type = data.media.split('.')[3];
   if (type == 'mp4') {
     return `<video width="526" class="materialboxed"  controls>
@@ -16,7 +15,6 @@ function getMediaType(data) {
   }
 
   if (type == 'jpg' || type == 'png') {
-    console.log(type);
     return `<img src="${data.media}" class="img-fluid" width="526" alt=""></img>`
   }
 
@@ -52,18 +50,12 @@ const UserController = {
         id = user_uuid
       }
       const user = await helperMethods.getAUserByUuid(User, id);
-      if (!user) return sendErrorResponse(res, 404, 'User not found');  
+      if (!user) return sendErrorResponse(res, 404, 'User not found');
       if (!follow) {
         user.following = false
       } else {
         user.following = true
       }
-      //  return sendSuccessResponse(res, 200, user);
-      const posts = await user.posts.map((x) => {
-        x.media = getMediaType(x);
-        return x;
-      })
-      user.posts = posts;
       return sendSuccessResponse(res, 200, { user });
     } catch (e) {
       return sendErrorResponse(res, 500, 'An error occurred viewing user details');

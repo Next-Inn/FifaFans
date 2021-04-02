@@ -47,12 +47,10 @@ const PostController = {
     try {
       const { uuid, name } = req.userData;
       const { comment, post_uuid } = req.body;
-      //  return console.log(req.body);
       const post = await Post.findOne({
         where: { uuid: post_uuid }
       });
       if (!post) return sendErrorResponse(res, 404, 'post not found');
-      //  return console.log(post);
       await post.comment.push(
         {
           user_uuid: uuid,
@@ -69,7 +67,6 @@ const PostController = {
       );
       return sendSuccessResponse(res, 200, postUpdate);
     } catch (error) {
-      console.log(error);
       return sendErrorResponse(res, 500, 'An error occurred commenting on the post');
     }
   },
@@ -97,7 +94,6 @@ const PostController = {
       );
       return sendSuccessResponse(res, 200, postUpdate);
     } catch (error) {
-      console.log(error);
       return sendErrorResponse(res, 500, 'An error occurred while commenting on the post');
     }
   },
