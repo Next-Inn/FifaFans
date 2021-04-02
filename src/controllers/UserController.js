@@ -44,15 +44,15 @@ const UserController = {
       let uuid;
       let follow;
       uuid = req.userData.uuid
-      const { user_uuid, my_uuid } = req.query;
+      const { user_uuid } = req.query;
       if (!user_uuid) {
         id = uuid;
       } else {
-        follow = await helperMethods.checkForFollower(Follower, user_uuid, my_uuid);
+        follow = await helperMethods.checkForFollower(Follower, user_uuid, uuid);
         id = user_uuid
       }
       const user = await helperMethods.getAUserByUuid(User, id);
-      if (!user) return sendErrorResponse(res, 404, 'User not found');
+      if (!user) return sendErrorResponse(res, 404, 'User not found');  
       if (!follow) {
         user.following = false
       } else {

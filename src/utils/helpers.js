@@ -431,7 +431,6 @@ const helperMethods = {
 
 	// check for follower
 	async checkForFollower (table, user_uuid, follower_uuid) {
-		console.log(follower_uuid);
 		const follower = await table.findOne({
 			where: { user_uuid, follower_uuid },
 			attributes: {

@@ -2,6 +2,7 @@ import model from './../models';
 import { sendErrorResponse, sendSuccessResponse } from './../utils/sendResponse';
 import helperMethods from './../utils/helpers';
 import uploadImage from './../services/imageuploader';
+import { post } from 'request';
 const { User, Profile, Post, Friend } = model;
 
 const PostController = {
@@ -129,6 +130,20 @@ const PostController = {
     try {
       const { uuid } = req.userData;
       const posts = await Post.findAll({ where: { user_uuid: uuid } });
+      return sendSuccessResponse(res, 200, posts);
+    } catch (error) {
+      return sendErrorResponse(res, 500, 'An error occurred while trying to list posts');
+    }
+  },
+
+  // list a users post
+  async listUserPostsByKey(req, res) {
+    try {
+      let posts;
+      const { user_uuid, post_uuid } = req.query;
+      if (req.query.post_uuid) posts = await Post.findAll({ where: { uuid: post_uuid }});
+      else posts = await Post.findAll({ where: { user_uuid } });
+      if (!posts.length) return sendErrorResponse(res, 409, 'No Post Found');
       return sendSuccessResponse(res, 200, posts);
     } catch (error) {
       return sendErrorResponse(res, 500, 'An error occurred while trying to list posts');
