@@ -202,13 +202,10 @@ const AuthController = {
 	async signin(req, res, next) {
 		try {
 			// extracting user data
-			const { email, password, username } = req.body;
+			const { email, password } = req.body;
 
 			// checking if the user exist
-			const user =
-				email ? await User.findOne({ where: { email } }) :
-					await User.findOne({ where: { username } });
-
+			const user = await User.findOne({ where: { email } });
 			if (!user) return sendErrorResponse(res, 404, 'User Not Found!!');
 
 			// compare password
@@ -219,7 +216,7 @@ const AuthController = {
 			// if (!user.dataValues.verified) return sendErrorResponse(res, 401, 'Verify Your Account ');
 			const token = userToken(user.dataValues);
 			res.cookie('token', token.token, { maxAge: 70000000, httpOnly: true });
-			return sendSuccessResponse(res, 200, token);
+			return sendSuccessResponse(res, 200, { user_uuid: user.dataValues.uuid, token: token.token });
 		} catch (e) {
 			return res.status(500).send(e.message)
 		}
