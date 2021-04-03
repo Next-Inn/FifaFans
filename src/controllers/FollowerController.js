@@ -27,7 +27,7 @@ const FollowerController = {
     try {
       const { uuid } = req.userData;
       const { user_uuid } = req.query;
-      const user = await checkForFollower(Follower, user_uuid, uuid);
+      const user = await checkForFollower(Follower, uuid, user_uuid);
       if (!user) return sendErrorResponse(res, 403, 'You cannot unFollow whom you have not followed');
       await unFollowUser(Follower, uuid, user_uuid);
       return sendSuccessResponse(res, 200, 'unFollowed successfully');
