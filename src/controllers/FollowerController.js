@@ -27,7 +27,7 @@ const FollowerController = {
     try {
       const { uuid } = req.userData;
       const { user_uuid } = req.query;
-      const user = await checkForFollower(Follower, user_uuid, uuid);
+      const user = await checkForFollower(Follower, uuid, user_uuid);
       if (!user) return sendErrorResponse(res, 403, 'You cannot unFollow whom you have not followed');
       await unFollowUser(Follower, uuid, user_uuid);
       return sendSuccessResponse(res, 200, 'unFollowed successfully');
@@ -45,6 +45,7 @@ const FollowerController = {
       if (!user) return sendErrorResponse(res, 404, 'User not found');
       return sendSuccessResponse(res, 200, user);
     } catch (e) {
+      console.error(e)
       return sendErrorResponse(res, 500, 'An error occurred viewing user details');
     }
   },
