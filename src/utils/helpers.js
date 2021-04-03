@@ -2,7 +2,7 @@
 import Sequelize, { Op, fn, col, and } from 'sequelize';
 import models from '../models'
 
-const { ChatRoomMember, RoomChat, User, Post, SingleChat, Profile } = models;
+const { ChatRoomMember, RoomChat, User, Post, SingleChat, Profile, Follower } = models;
 
 const helperMethods = {
 	async searchWithCategoryAndLocation (point, category_uuid, Service) {
@@ -469,7 +469,32 @@ const helperMethods = {
 	// list all user's follower
 	async listAllFollowers (table, user_uuid) {
 		const followers = await table.findAll({
-			// include: User,
+			include: [
+				{
+					model: User,
+					as: 'user',
+					attributes: ['uuid', 'name', 'email', 'username', 'status', 'club', 'phone'],
+					include: [
+						{
+							model: Profile,
+							as: 'profiles',
+							attributes: ['uuid', 'gender', 'shortBio', 'favoriteQuote', 'language', 'website', 'profile_pic']
+						}
+					]
+				},
+				{
+					model: User,
+					as: 'follower',
+					attributes: ['uuid', 'name', 'email', 'username', 'status', 'club', 'phone'],
+					include: [
+						{
+							model: Profile,
+							as: 'profiles',
+							attributes: ['uuid', 'gender', 'shortBio', 'favoriteQuote', 'language', 'website', 'profile_pic']
+						}
+					]
+				},
+			],
 			where: { user_uuid, blocked: false },
 			attributes: {
 				exclude: [

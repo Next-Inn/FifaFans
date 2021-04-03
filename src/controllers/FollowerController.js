@@ -45,6 +45,7 @@ const FollowerController = {
       if (!user) return sendErrorResponse(res, 404, 'User not found');
       return sendSuccessResponse(res, 200, user);
     } catch (e) {
+      console.error(e)
       return sendErrorResponse(res, 500, 'An error occurred viewing user details');
     }
   },

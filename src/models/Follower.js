@@ -13,6 +13,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Follower.associate = function(models) {
     // associations can be defined here
+    Follower.belongsTo(models.User, {
+      as: 'user',
+      foreignKey: 'user_uuid'
+    });
+    Follower.belongsTo(models.User, {
+      as: 'follower',
+      foreignKey: 'follower_uuid'
+    });
   };
   return Follower;
 };
