@@ -5,7 +5,7 @@ import { hashPassword, comparePassword } from './../utils/passwordHash';
 import uploadImage from './../services/imageuploader';
 import { v4 as uuidv4 } from 'uuid'
 import { SendMail, sendForgotPasswordMail } from './../services/emailsender';
-import { createToken } from './../utils/processToken';
+import { createToken, verifyToken } from './../utils/processToken';
 import { checkExpiredToken } from './../utils/dateChecker';
 import helperMethods from './../utils/helpers';
 const {
@@ -175,6 +175,26 @@ const AuthController = {
 			SendMail(email, verifyId, user.dataValues.uuid);
 			return sendSuccessResponse(res, 200, 'Link Sent, Please Check your mail and Verify Account, Thanks!!!');
 		} catch (e) {
+			return res.status(500).send(e.message)
+		}
+	},
+
+	async refreshToken(req, res, next) {
+		try {
+			let user;
+			if (req.query.email) {
+				user = await User.findOne({ where: { email: req.query.email } });
+			} else if (req.query.token) {
+				const { email } = verifyToken(req.query.token);
+				if (email !== req.userData.email) return sendErrorResponse(res, 404, 'Token is invalid');
+				user = await User.findOne({ where: { email } });
+			}
+			if (!user) return sendErrorResponse(res, 404, 'User not Found');
+			const token = userToken(user.dataValues);
+			res.cookie('token', token.token, { maxAge: 70000000, httpOnly: true });
+			return sendSuccessResponse(res, 200, token);
+		} catch (e) {
+			console.error(e)
 			return res.status(500).send(e.message)
 		}
 	},

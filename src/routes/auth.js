@@ -15,7 +15,8 @@ const {
   updateUser,
   setPassword,
   getNewEmailToken,
-  getAllUserUsernameAndEmail
+  getAllUserUsernameAndEmail,
+  refreshToken
 } = AuthController;
 
 userRouter.post(`/signup`, signup);
@@ -29,5 +30,6 @@ userRouter.patch(`/resetpassword`, Auth, resetPassword);
 userRouter.patch(`/updateprofile`, Auth, updateUser);
 userRouter.post(`/refresh-email-token`, getNewEmailToken);
 userRouter.get(`/form/validations`, getAllUserUsernameAndEmail);
+userRouter.get(`/refreshToken`, Auth, refreshToken); // token||email = []
 
 export default userRouter;
