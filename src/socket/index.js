@@ -6,10 +6,13 @@ import postConnect from '../socket/postConnect';
 const emmiter = require('./EventHandler');
 
 const { Socket } = models;
-export default (io) => {
+
+const SocketDev = (io) => {
+  console.log(`io: ${io}`)
   // let onlineSockets = [];
   if (io) {
     io.on('connection', async (socket) => {
+      console.log("getting here")
       console.log('a user connected');
       let user = 'anonymous';
       const { handshake } = socket;
@@ -67,3 +70,5 @@ export default (io) => {
     });
   }
 };
+
+export default SocketDev;

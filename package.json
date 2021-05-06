@@ -43,6 +43,7 @@
     "canvas": "^2.6.1",
     "cloudinary": "^1.23.0",
     "cookie-parser": "~1.4.5",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "datauri": "^3.0.0",
     "debug": "~4.3.1",
@@ -64,12 +65,12 @@
     "passport-google-oauth20": "^2.0.0",
     "path": "^0.12.7",
     "pg": "^8.5.1",
-    "redis": "3.0.2",
+    "redis": "^3.1.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0",
-    "socket.io": "^3.1.0",
+    "socket.io": "^2.4.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
