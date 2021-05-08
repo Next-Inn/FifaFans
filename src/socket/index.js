@@ -6,7 +6,9 @@ import postConnect from '../socket/postConnect';
 const emmiter = require('./EventHandler');
 
 const { Socket } = models;
-export default (io) => {
+
+const SocketDev = (io) => {
+  console.log(`io: ${io}`)
   // let onlineSockets = [];
   if (io) {
     io.on('connection', async (socket) => {
@@ -55,6 +57,9 @@ export default (io) => {
             console.log(error);
           }
         }
+      }else {
+        console.log('message');
+        io.emit('login_error', 'login please')
       }
 
       emmiter.default(io);
@@ -67,3 +72,5 @@ export default (io) => {
     });
   }
 };
+
+export default SocketDev;
