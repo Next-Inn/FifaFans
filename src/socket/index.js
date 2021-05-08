@@ -12,7 +12,6 @@ const SocketDev = (io) => {
   // let onlineSockets = [];
   if (io) {
     io.on('connection', async (socket) => {
-      console.log("getting here")
       console.log('a user connected');
       let user = 'anonymous';
       const { handshake } = socket;
@@ -58,6 +57,9 @@ const SocketDev = (io) => {
             console.log(error);
           }
         }
+      }else {
+        console.log('message');
+        io.emit('login_error', 'login please')
       }
 
       emmiter.default(io);
