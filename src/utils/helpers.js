@@ -576,10 +576,25 @@ const helperMethods = {
 		
 	  },
 
-	  async createPersonalChat(data){
-		const chat =await SingleChat.create(data);
-		return chat;
-	  },
+		async createPersonalChat(data){
+			const chat =await SingleChat.create(data);
+			await Follower.update(
+				{
+					messaged: true,
+				},
+				{
+					where: {
+						user_uuid: {
+							[Op.or]: [data.sender_uuid, data.recipient_uuid]
+						},
+						follower_uuid: {
+							[Op.or]: [data.sender_uuid, data.recipient_uuid]
+						}
+						},
+				},
+				);
+			return chat;
+			},
 
 
 	  async getChats (user_uuid, secondP_uuid) {
