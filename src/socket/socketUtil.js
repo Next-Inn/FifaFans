@@ -22,6 +22,7 @@ const joinGroup = async (group_id, user, socket, io) => {
 
 const sendMessageToGroup = async (group_id, message, user, io, parent_uuid ="") => {
   try {
+    // console.log(group_id, message)
     const  chat = await helperMethods.saveGroupChat(group_id, user.uuid, parent_uuid, message, user.name );
     await io.in(group_id).emit('message', generateMessage(user.name, chat.uuid, message));
   } catch (error) {

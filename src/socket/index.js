@@ -9,7 +9,7 @@ const emmiter = require('./EventHandler');
 const { Socket } = models;
 
 const SocketDev = (io) => {
-  console.log(`io: ${io}`)
+  // console.log(`io: ${io}`)
   // let onlineSockets = [];
   if (io) {
     io.on('connection', async (socket) => {

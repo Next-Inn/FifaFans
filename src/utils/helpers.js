@@ -545,14 +545,14 @@ const helperMethods = {
 	},
 
 	async saveGroupChat(group_uuid, sender_uuid, parent_uuid, message, sendername){
-		return await RoomChat.create({
-		  parent_uuid,
-		  group_uuid,
-		  sender_uuid,
-		  sendername,
-		  message,
-		});
-	  },
+    return await RoomChat.create({
+      parent_uuid,
+      group_uuid,
+      sender_uuid,
+      sendername,
+      message,
+    });
+  },
 
 	  // list user joined rooms
 	async getGroupChats(group_uuid, roomChats, room){
