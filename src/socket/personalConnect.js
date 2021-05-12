@@ -7,7 +7,7 @@ export default async function (socket, io, user){
   // a user joins a room onces
   socket.on('join-chat', async (data) => {
     try {
-      // console.log('here here here', data);
+      console.log('here here here', data);
       const { chat_uuid } = data;
       socket.join(chat_uuid, () => {
         socket.on(`${chat_uuid}-message`, (data) => {

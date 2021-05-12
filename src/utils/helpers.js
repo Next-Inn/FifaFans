@@ -599,9 +599,6 @@ const helperMethods = {
 
 	  async getChats (user_uuid, secondP_uuid) {
 		 const chats = await SingleChat.findAll({
-			include: [{
-				model: User,
-			}], 
 			where: {
 				sender_uuid: {
 				  [Op.or]: [user_uuid, secondP_uuid]
