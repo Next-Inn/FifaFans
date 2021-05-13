@@ -387,6 +387,7 @@ const helperMethods = {
 		});
 		return users;
 	},
+	
 	// list all data in a table
 	async listAllDataInTable (table) {
 		const datas = await table.findAll({
@@ -403,6 +404,57 @@ const helperMethods = {
 			]
 		});
 		return datas;
+	},
+
+	// list all data in a table
+	async getPostDetails (key = {}) {
+		try {
+			let datas = await Post.findAll({
+				include: [
+					{
+						model: User,
+						attributes: ['uuid', 'name'],
+						include: [
+							{
+								model: Profile,
+								as: 'profiles',
+								attributes: ['profile_pic']
+							}
+						]
+					}
+				],
+				attributes: {
+					exclude: [
+						'updatedAt'
+					]
+				},
+				order: [
+					[
+						'createdAt',
+						'DESC'
+					]
+				],
+				where: key
+			});
+
+			if (datas.length > 0) {
+				datas = datas.map(data => ({
+					uuid: data.uuid,
+					user_uuid: data.user_uuid,
+					owner_name: data.owner_name,
+					post: data.post,
+					media: data.media,
+					comment: data.comment,
+					likes: data.likes,
+					createdAt: data.createdAt,
+					name: data.User.name,
+					profile_pic: data.User.profiles[0].profile_pic
+				}))
+			}
+			return datas;
+		} catch (error) {
+			console.error(error)
+		}
 	},
 
 	// find if a user have a friend
@@ -577,7 +629,7 @@ const helperMethods = {
 	  },
 
 		async createPersonalChat(data){
-			const chat =await SingleChat.create(data);
+			const chat = await SingleChat.create(data);
 			await Follower.update(
 				{
 					messaged: true,

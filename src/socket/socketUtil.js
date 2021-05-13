@@ -27,6 +27,7 @@ const sendMessageToGroup = async (group_id, message, user, io, parent_uuid ="") 
     await io.in(group_id).emit('message', generateMessage(user.name, chat.uuid, message));
   } catch (error) {
     console.log(error);
+    await io.to(group_id).emit('groupMessage-error', 'Error sending message');
   }
 }
 
@@ -41,10 +42,11 @@ const sendMessageToGroup = async (group_id, message, user, io, parent_uuid ="") 
  const sendPrivateMessage = async (data, io, chat_uuid, user) => {
   try {
     data.sender_uuid = user.uuid
-    const chat = await helperMethods.createPersonalChat(data);
+    const chat = await helperMethods.createPersonalChat({ ...data, chat_uuid });
     await io.to(chat_uuid).emit('personalMessage', chat);
   } catch (error) {
     console.log(error);
+    await io.to(chat_uuid).emit('personalMessage-error', 'Error sending message');
   }
 };
 

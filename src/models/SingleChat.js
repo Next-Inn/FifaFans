@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     recipient_uuid: DataTypes.UUID,
     parent_uuid: DataTypes.UUID,
     message: DataTypes.TEXT,
-    deleted_at: DataTypes.DATE
+    deleted_at: DataTypes.DATE,
+    chat_uuid: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {});
   SingleChat.associate = function(models) {
     // associations can be defined here
