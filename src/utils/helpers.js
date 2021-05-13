@@ -577,7 +577,7 @@ const helperMethods = {
 	  },
 
 		async createPersonalChat(data){
-			const chat =await SingleChat.create(data);
+			const chat = await SingleChat.create(data);
 			await Follower.update(
 				{
 					messaged: true,
