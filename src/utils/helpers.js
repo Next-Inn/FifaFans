@@ -448,7 +448,7 @@ const helperMethods = {
 					likes: data.likes,
 					createdAt: data.createdAt,
 					name: data.User.name,
-					profile_pic: data.User.profiles[0].profile_pic
+					profile_pic: data.User.profiles[0] ? data.User.profiles[0].profile_pic : ''
 				}))
 			}
 			return datas;
