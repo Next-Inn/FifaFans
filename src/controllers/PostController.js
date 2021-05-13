@@ -125,7 +125,7 @@ const PostController = {
   async listUserPosts(req, res) {
     try {
       const { uuid } = req.userData;
-      const posts = await Post.findAll({ where: { user_uuid: uuid } });
+      const posts = await helperMethods.getPostDetails({ user_uuid: uuid });
       return sendSuccessResponse(res, 200, posts);
     } catch (error) {
       return sendErrorResponse(res, 500, 'An error occurred while trying to list posts');
@@ -137,8 +137,8 @@ const PostController = {
     try {
       let posts;
       const { user_uuid, post_uuid } = req.query;
-      if (req.query.post_uuid) posts = await Post.findAll({ where: { uuid: post_uuid }});
-      else posts = await Post.findAll({ where: { user_uuid } });
+      if (req.query.post_uuid) posts = await helperMethods.getPostDetails({ uuid: post_uuid });
+      else posts = await helperMethods.getPostDetails({ user_uuid });
       if (!posts.length) return sendErrorResponse(res, 409, 'No Post Found');
       return sendSuccessResponse(res, 200, posts);
     } catch (error) {
@@ -149,7 +149,7 @@ const PostController = {
   //list platform post
   async listPosts(req, res) {
     try {
-      const datas = await helperMethods.listAllDataInTable(Post);
+      const datas = await helperMethods.getPostDetails();
       return sendSuccessResponse(res, 200, datas);
     } catch (error) {
       return sendErrorResponse(res, 500, 'Aan error occured!!');
